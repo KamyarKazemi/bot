@@ -1,0 +1,9 @@
+.env
+data/
+*.db
+*.pickle
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/

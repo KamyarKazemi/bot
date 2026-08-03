@@ -1,0 +1,7 @@
+# Telegram Bot API framework.
+#   [socks]    — SOCKS5 proxy support, for running from inside Iran
+#   [webhooks] — the tornado server used in webhook mode (Render, any VPS with a domain)
+#
+# 22.8 is the first line that supports Python 3.13/3.14. Older releases call
+# asyncio.get_event_loop(), which 3.14 turned into a hard error at startup.
+python-telegram-bot[socks,webhooks]==22.8

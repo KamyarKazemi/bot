@@ -1,0 +1,32 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+#
+# With this file in the repo you can create the service from the Render dashboard via
+# "New +" > "Blueprint" instead of filling the form by hand. The two secret values are
+# marked sync:false, so Render asks you for them instead of storing them in Git.
+
+services:
+  - type: web
+    name: bizynex-bot
+    runtime: python
+    plan: free
+    region: frankfurt          # closest Render region to Iran
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    # No healthCheckPath on purpose: in webhook mode the only HTTP route belongs to
+    # Telegram. Render then falls back to checking that the port is bound, which is
+    # exactly what we want.
+    envVars:
+      - key: BOT_TOKEN
+        sync: false            # you paste this in the dashboard
+      - key: ADMIN_CHAT_IDS
+        sync: false
+      - key: MODE
+        value: webhook
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: LOG_LEVEL
+        value: INFO
+      # PROXY_URL stays empty: Render reaches Telegram directly.
+      - key: PROXY_URL
+        value: ""
