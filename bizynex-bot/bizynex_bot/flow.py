@@ -72,13 +72,24 @@ BUDGET_OPTIONS = (
     Option("b0", "ترجیح می‌دهم در گفت‌وگو مشخص شود"),
 )
 
+# Poster / banner / cover / thumbnail work is an order of magnitude cheaper than a
+# build project. Showing build-sized ranges to someone ordering one thumbnail reads
+# as "you are not our customer" and loses the lead.
+DESIGN_BUDGET_OPTIONS = (
+    Option("d1", "۳۰۰ هزار تا ۱ میلیون تومان"),
+    Option("d2", "۱ تا ۳ میلیون تومان"),
+    Option("d3", "۳ تا ۶ میلیون تومان"),
+    Option("d4", "۶ تا ۱۰ میلیون تومان"),
+    Option("d0", "ترجیح می‌دهم در گفت‌وگو مشخص شود"),
+)
+
 
 SERVICE_OPTIONS = (
     Option("website", "طراحی و توسعهٔ وب‌سایت"),
     Option("automation", "اتوماسیون و یکپارچه‌سازی فرایندها"),
     Option("bot", "ربات پیام‌رسان"),
     Option("inventory", "سیستم انبارداری و مدیریت موجودی"),
-    Option("graphic", "طراحی گرافیک و هویت بصری"),
+    Option("graphic", "طراحی پوستر، بنر، کاور و تامبنیل"),
     Option("consulting", "هنوز مطمئن نیستم؛ به مشاوره نیاز دارم"),
 )
 
@@ -401,45 +412,44 @@ FLOW: tuple[Step, ...] = (
         summary_label="مشکل اصلی",
         show_if=service_is("inventory"),
     ),
-    # ------------------------------------------------------------- graphic
+    # ------------------------------------------------------- visual artwork
     Step(
         id="g_items",
         kind="multi",
-        section="گرافیک",
-        title="به کدام اقلام بصری نیاز دارید؟",
+        section="طراحی بصری",
+        title="به کدام طرح‌ها نیاز دارید؟",
+        help="هر تعداد که لازم است انتخاب کنید، سپس «تأیید و ادامه» را بزنید.",
         options=(
-            Option("logo", "لوگو و هویت بصری"),
-            Option("banner", "بنر تبلیغاتی"),
-            Option("social", "پست و استوری شبکه‌های اجتماعی"),
-            Option("print", "کاتالوگ، بروشور یا پوستر"),
-            Option("package", "بسته‌بندی محصول"),
-            Option("office", "ست اداری (کارت ویزیت، سربرگ)"),
+            Option("poster", "پوستر تبلیغاتی"),
+            Option("banner", "بنر تبلیغاتی (چاپی یا دیجیتال)"),
+            Option("cover", "کاور اینستاگرام"),
+            Option("thumbnail", "تامبنیل یوتیوب"),
         ),
-        summary_label="اقلام موردنیاز",
+        summary_label="نوع طرح",
         show_if=service_is("graphic"),
     ),
     Step(
-        id="g_brand",
+        id="g_count",
         kind="choice",
-        section="گرافیک",
-        title="هویت بصری فعلی‌تان در چه وضعیتی است؟",
+        section="طراحی بصری",
+        title="تقریباً چند طرح مدنظرتان است؟",
         options=(
-            Option("scratch", "چیزی نداریم؛ از صفر شروع می‌کنیم"),
-            Option("logo_only", "فقط لوگو داریم"),
-            Option("partial", "بخشی داریم اما یکدست نیست"),
-            Option("redesign", "داریم اما می‌خواهیم کامل بازطراحی شود"),
+            Option("c1", "یک طرح"),
+            Option("c2", "۲ تا ۵ طرح"),
+            Option("c3", "۶ تا ۱۵ طرح"),
+            Option("c4", "بیش از ۱۵ طرح"),
         ),
-        summary_label="وضعیت هویت بصری",
+        summary_label="تعداد طرح",
         show_if=service_is("graphic"),
     ),
     Step(
         id="g_volume",
         kind="choice",
-        section="گرافیک",
+        section="طراحی بصری",
         title="این همکاری یک‌باره است یا مستمر؟",
-        help="همکاری مستمر معمولاً هم ارزان‌تر تمام می‌شود و هم یکدستی بصری را حفظ می‌کند.",
+        help="همکاری مستمر معمولاً هم ارزان‌تر تمام می‌شود و هم ظاهر کارها یکدست می‌ماند.",
         options=(
-            Option("once", "یک پروژهٔ مشخص"),
+            Option("once", "یک سفارش مشخص"),
             Option("monthly", "به‌صورت ماهانه و مستمر"),
             Option("seasonal", "فصلی یا کمپین‌محور"),
         ),
@@ -447,13 +457,27 @@ FLOW: tuple[Step, ...] = (
         show_if=service_is("graphic"),
     ),
     Step(
+        id="g_assets",
+        kind="choice",
+        section="طراحی بصری",
+        title="متن، عکس و لوگوی موردنیاز طرح آماده است؟",
+        help="این پرسش روی زمان تحویل اثر مستقیم دارد.",
+        options=(
+            Option("ready", "بله، همه چیز آماده است"),
+            Option("partial", "بخشی آماده است"),
+            Option("none", "خیر، باید از ابتدا تهیه شود"),
+        ),
+        summary_label="وضعیت محتوای طرح",
+        show_if=service_is("graphic"),
+    ),
+    Step(
         id="g_style",
         kind="text",
-        section="گرافیک",
-        title="دو یا سه برند که ظاهرشان را می‌پسندید نام ببرید.",
+        section="طراحی بصری",
+        title="دو یا سه نمونه که ظاهرشان را می‌پسندید نام ببرید.",
         help="کمک می‌کند سلیقهٔ بصری‌تان را دقیق بفهمیم و آزمون‌وخطا کمتر شود.",
         validator="short_text",
-        placeholder="نام برند یا آدرس اینستاگرام و سایتشان",
+        placeholder="نام برند، پیج اینستاگرام یا کانال یوتیوب",
         summary_label="ارجاع‌های سلیقه‌ای",
         show_if=service_is("graphic"),
     ),
@@ -514,6 +538,17 @@ FLOW: tuple[Step, ...] = (
         help="این پرسش برای قیمت‌گذاری نیست؛ برای این است که پیشنهادی متناسب با شرایط واقعی‌تان بدهیم، نه پیشنهادی که به نتیجه نمی‌رسد.",
         options=BUDGET_OPTIONS,
         summary_label="بازهٔ بودجه",
+        show_if=lambda a: a.get("service") != "graphic",
+    ),
+    Step(
+        id="t_budget_design",
+        kind="choice",
+        section="زمان و بودجه",
+        title="بودجهٔ تقریبی‌تان در چه بازه‌ای است؟",
+        help="بسته به تعداد طرح‌ها و میزان بازنگری متفاوت است. انتخاب شما فقط برای ارائهٔ پیشنهاد متناسب است.",
+        options=DESIGN_BUDGET_OPTIONS,
+        summary_label="بازهٔ بودجه",
+        show_if=service_is("graphic"),
     ),
     # ------------------------------------------------- common tail: contact
     Step(

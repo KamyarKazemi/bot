@@ -53,7 +53,9 @@ confidence · professionalism · transparency · predictability · competence ·
 1. **وب‌سایت** — custom development and WordPress
 2. **اتوماسیون و یکپارچه‌سازی** — process automation, integrations, internal tooling
 3. **ربات پیام‌رسان** — Telegram/messaging bots
-4. **طراحی گرافیک** — logo, banner, poster, social assets
+4. **طراحی پوستر، بنر، کاور و تامبنیل** — advertising posters and banners, Instagram covers,
+   YouTube thumbnails. Deliberately narrower than full brand identity: no logo design,
+   no stationery, no packaging.
 5. **سیستم انبارداری / مدیریت موجودی** — inventory management systems
 6. **مشاوره** — consulting, unsure-what-I-need path
 

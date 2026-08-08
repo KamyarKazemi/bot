@@ -177,6 +177,22 @@ def test_multi_select_rules() -> None:
     assert wizard.answers["w_features"] == ["payment", "blog"]
 
 
+def test_exactly_one_budget_question_per_path() -> None:
+    """Design work uses its own, far smaller ranges — but never both sets at once."""
+    for option in SERVICE_OPTIONS:
+        wizard = walk(option.key)
+        budget_steps = [s.id for s in wizard.path if s.id.startswith("t_budget")]
+        assert len(budget_steps) == 1, f"{option.key} asked for budget {len(budget_steps)} times"
+        expected = "t_budget_design" if option.key == "graphic" else "t_budget"
+        assert budget_steps[0] == expected, f"{option.key} got the wrong budget scale"
+
+    design = walk("graphic")
+    labels = [o.label for o in STEPS_BY_ID["t_budget_design"].options]
+    assert "۳۰۰ هزار" in labels[0], "the cheapest design tier must start at 300k Toman"
+    assert "۱۰ میلیون" in labels[-2], "the top design tier must cap at 10M Toman"
+    assert design.display_value(STEPS_BY_ID["t_budget_design"]) in labels
+
+
 def test_conditional_steps() -> None:
     wizard = walk("website")
     # w_url only appears when the user says they already have a site.
