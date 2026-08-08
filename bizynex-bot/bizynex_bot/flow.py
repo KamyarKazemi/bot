@@ -13,10 +13,23 @@ Copy rules (from CONTEXT.md):
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from typing import Callable
 
 Answers = dict[str, object]
+
+# --------------------------------------------------------------------------
+# Delivery promise for poster / banner / cover / thumbnail work:
+# one working day per batch of three designs. This is a CEILING we commit to,
+# not an average — a promise kept is the product (see CONTEXT.md §2).
+# --------------------------------------------------------------------------
+DESIGNS_PER_WORKING_DAY = 3
+
+
+def design_delivery_days(design_count: int) -> int:
+    """3 designs -> 1 day, 6 -> 2 days, 7 -> 3 days."""
+    return max(1, math.ceil(design_count / DESIGNS_PER_WORKING_DAY))
 
 
 @dataclass(frozen=True)
@@ -433,13 +446,15 @@ FLOW: tuple[Step, ...] = (
         kind="choice",
         section="طراحی بصری",
         title="تقریباً چند طرح مدنظرتان است؟",
+        help="زمان تحویل به ازای هر ۳ طرح یک روز کاری است. عددی که می‌بینید سقف زمان است، نه میانگین.",
         options=(
-            Option("c1", "یک طرح"),
-            Option("c2", "۲ تا ۵ طرح"),
-            Option("c3", "۶ تا ۱۵ طرح"),
-            Option("c4", "بیش از ۱۵ طرح"),
+            Option("c1", "۱ تا ۳ طرح — تحویل تا ۱ روز کاری"),
+            Option("c2", "۴ تا ۶ طرح — تحویل تا ۲ روز کاری"),
+            Option("c3", "۷ تا ۹ طرح — تحویل تا ۳ روز کاری"),
+            Option("c4", "۱۰ تا ۱۵ طرح — تحویل تا ۵ روز کاری"),
+            Option("c5", "بیش از ۱۵ طرح — زمان تحویل در گفت‌وگو مشخص می‌شود"),
         ),
-        summary_label="تعداد طرح",
+        summary_label="تعداد طرح و زمان تحویل",
         show_if=service_is("graphic"),
     ),
     Step(
@@ -566,7 +581,7 @@ FLOW: tuple[Step, ...] = (
         section="اطلاعات تماس",
         title="نام و نام خانوادگی شما؟",
         validator="name",
-        placeholder="مثال: کامیار کاظمی",
+        placeholder="نام و نام خانوادگی خود را کامل بنویسید",
         summary_label="نام",
     ),
     Step(

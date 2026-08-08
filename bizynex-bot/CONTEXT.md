@@ -28,8 +28,14 @@ validated, every state transition is explicit, and the copy is written to a fixe
 
 ## 2. Business context the bot must express
 
-**Bizynex** — software/digital services company, Iran, 3 founders (front-end, back-end,
-business & strategy), pre-launch, no employees, limited capital, international-ready by design.
+**Bizynex** — software/digital services company, Iran. A small in-house team covering
+front-end, back-end, and business & strategy. Pre-launch, limited capital, international-ready
+by design. Time is the scarcest resource, so anything the bot does must run without
+supervision.
+
+**Copy rule:** customer-facing text says "team" and never states headcount or names
+individuals. Team size is an internal constraint, not a selling point — and a stated
+number invites the "are they big enough?" doubt we gain nothing by raising.
 
 **We sell business outcomes, not deliverables.** Not websites → digital credibility. Not
 automation → operational efficiency. Not software → measurable business improvement.

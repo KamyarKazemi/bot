@@ -31,7 +31,7 @@ from bizynex_bot.validators import validate_email, validate_name, validate_phone
 
 SAMPLE_TEXT = {
     "url": "bizynex.com",
-    "name": "کامیار کاظمی",
+    "name": "نام نمونه",
     "phone": "۰۹۱۲۱۲۳۴۵۶۷",
     "email": "kamyar@example.com",
     "short_text": "نمونهٔ پاسخ کوتاه",
@@ -193,6 +193,45 @@ def test_exactly_one_budget_question_per_path() -> None:
     assert design.display_value(STEPS_BY_ID["t_budget_design"]) in labels
 
 
+def test_design_delivery_promise() -> None:
+    """The button labels must match the one-day-per-three-designs rule exactly."""
+    from bizynex_bot.flow import design_delivery_days
+
+    assert [design_delivery_days(n) for n in (1, 2, 3)] == [1, 1, 1]
+    assert [design_delivery_days(n) for n in (4, 5, 6)] == [2, 2, 2]
+    assert design_delivery_days(7) == 3
+    assert design_delivery_days(9) == 3
+    assert design_delivery_days(15) == 5
+
+    # Each bucket's stated ceiling must equal the rule applied to its upper bound.
+    buckets = {"c1": 3, "c2": 6, "c3": 9, "c4": 15}
+    persian = {1: "۱", 2: "۲", 3: "۳", 5: "۵"}
+    step = STEPS_BY_ID["g_count"]
+    for key, upper_bound in buckets.items():
+        promised = f"تحویل تا {persian[design_delivery_days(upper_bound)]} روز کاری"
+        assert promised in step.option_label(key), f"{key}: label contradicts the rule"
+    assert "گفت‌وگو" in step.option_label("c5"), "the open-ended bucket must not promise a date"
+
+
+def test_no_team_size_or_personal_names_in_copy() -> None:
+    """Customer-facing copy talks about a team, never headcount or individuals."""
+    from bizynex_bot import flow, render
+
+    surfaces = [
+        render.welcome("مهمان"), render.about(), render.services(), render.help_text(),
+        render.submitted("BZX-TEST"), render.cancelled(),
+    ]
+    surfaces += [step.title + step.help + step.placeholder for step in FLOW]
+    surfaces += [option.label for step in FLOW for option in step.options]
+    # Headcount words only. Questions about the CUSTOMER's team size are fine and
+    # necessary — "۱ تا ۳ نفر" in the automation branch is about them, not us.
+    banned = ["سه‌نفره", "دونفره", "نفره هستیم", "بنیان‌گذار", "کامیار", "کاظمی"]
+    for text in surfaces:
+        for word in banned:
+            assert word not in text, f"copy still mentions {word!r}: {text[:60]}"
+    assert flow.STEPS_BY_ID["t_name"].placeholder
+
+
 def test_conditional_steps() -> None:
     wizard = walk("website")
     # w_url only appears when the user says they already have a site.
@@ -232,9 +271,9 @@ def test_validators() -> None:
         ok, _ = validate_phone(bad)
         assert not ok, bad
 
-    assert validate_name("کامیار کاظمی")[0]
+    assert validate_name("نام نمونه")[0]
     assert not validate_name("ک")[0]
-    assert not validate_name("کامیار ۱۲۳")[0]
+    assert not validate_name("نام نمونه ۱۲۳")[0]
     assert validate_email("a.b@example.co.ir")[0]
     assert not validate_email("a@b")[0]
 
@@ -275,7 +314,7 @@ def test_rendering_does_not_crash() -> None:
         )
     wizard = Wizard(new_state())
     assert render.question(wizard)
-    assert render.welcome("کامیار") and render.about() and render.services() and render.help_text()
+    assert render.welcome("مهمان") and render.about() and render.services() and render.help_text()
 
 
 def test_storage_roundtrip() -> None:
@@ -288,7 +327,7 @@ def test_storage_roundtrip() -> None:
         wizard = walk("website")
         ticket = store.new_ticket()
         assert ticket.startswith("BZX-")
-        user = {"id": 42, "full_name": "کامیار", "username": "kam"}
+        user = {"id": 42, "full_name": "نام نمونه", "username": "kam"}
         store.save_lead(ticket=ticket, user=user, answers=wizard.answers, delivered=False)
         assert store.stats() == {"total": 1, "today": 1, "pending": 1}
         assert len(store.undelivered()) == 1

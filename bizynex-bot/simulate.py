@@ -56,7 +56,7 @@ def auto(service_key: str) -> None:
             samples = {
                 "phone": "۰۹۱۲۱۲۳۴۵۶۷",
                 "email": "info@example.com",
-                "name": "کامیار کاظمی",
+                "name": "نام نمونه",
                 "url": "example.com",
             }
             wizard.answer_text(step.id, samples.get(step.validator, "نمونهٔ پاسخ متنی برای پیش‌نمایش."))
@@ -69,13 +69,13 @@ def auto(service_key: str) -> None:
     print(plain(render.admin_card(
         wizard,
         ticket="BZX-14050512-DEMO",
-        user={"id": 123456789, "full_name": "کامیار کاظمی", "username": "kamyar"},
+        user={"id": 123456789, "full_name": "نام نمونه", "username": "example"},
     )))
 
 
 def interactive() -> None:
     wizard = Wizard(new_state())
-    print(plain(render.welcome("کامیار")))
+    print(plain(render.welcome("مهمان")))
     while wizard.mode == MODE_WIZARD:
         show_card(wizard)
         step = wizard.step
